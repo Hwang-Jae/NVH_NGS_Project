@@ -128,6 +128,12 @@
             border-style: solid;
             border-color: #1f2937 transparent transparent transparent;
         }
+	.responsive-img {
+    	width: 100%; /* 부모 요소의 너비에 맞춤 */
+    	max-width: 600px; /* 최대 너비 제한 */
+    	height: auto; /* 비율 유지를 위해 높이 자동 설정 */
+    	border: 1px solid gray;
+  	}
 
         /* 모바일 대응: 툴팁이 잘리지 않도록 좌우 여백 확보 */
         @media (max-width: 640px) {
@@ -194,6 +200,17 @@
                         <p class="text-sm text-gray-500">AI 예지보전을 통해 **설비 가동률 15%p 향상**, **돌발 정지 30% 감소** 목표. (비용 절감 및 생산성 극대화)</p>
                     </div>
                 </div>
+
+		<div class="mt-12">
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-15x3 mx-auto">
+		<div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-600 text-center">
+		<img src="01.jpg" alt="샘플 이미지" class="responsive-img">
+		</div>
+		<div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-600 text-center">
+		<img src="02.jpg" alt="샘플 이미지" class="responsive-img">
+		</div>
+		</div>
+		</div>
                 
                 <div class="mt-12">
                     <h3 class="text-3xl font-bold text-center mb-6 text-blue-800"><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 3대 핵심 목표</h3>
