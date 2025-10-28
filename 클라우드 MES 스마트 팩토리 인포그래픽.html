@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>클라우드 MES 스마트 팩토리 인포그래픽</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <!-- Chosen Palette: Brilliant Blues (Hex: #004AAD, #0077E6, #7ABFFF, #B3D9FF, #E0EFFF) -->
+    <!-- Plan Narrative & Structure: 본 인포그래픽은 사용자 요청에 따라 논리적인 흐름을 갖습니다. 1. '클라우드 MES'의 핵심 개념과 KPI를 소개해 주제를 설정합니다. 2. '시스템 구성도'를 HTML/CSS 다이어그램으로 시각화하여 기술적 구조를 보여줍니다. 3. 요청의 핵심인 'H/L 공장 모델'에 초점을 맞춰, 기존의 문제점과 클라우드 솔루션을 차트로 명확히 비교합니다. 4. '구축 사례'를 통해 정량적인 'Before & After' 효과를 제시하며 마무리합니다. 이 흐름은 일반적인 개념에서 구체적인 적용 사례로 사용자를 안내합니다. -->
+    <!-- Select Optimal Visualizations:
+    1.  핵심 KPI: Goal(Inform) -> "Single Big Number" (HTML/CSS) -> Justification(주요 이점을 빠르고 강렬하게 전달). (NO SVG).
+    2.  시스템 구성도: Goal(Organize) -> "Flow Chart" (HTML/CSS/Tailwind) -> Justification(SVG/Mermaid 제약 조건 하에 계층 구조를 시각화하는 유일한 방법. 스타일링된 div와 유니코드 화살표 사용). (NO SVG, NO MERMAID).
+    3.  H/L 모델 (문제 vs 해결): Goal(Compare) -> "Bar Chart" (Chart.js/Canvas) -> Justification(다품종 소량생산의 특정 문제점과 클라우드 MES의 해결 능력을 항목별로 직접 비교. 16자 레이블 래핑 및 필수 툴팁 적용). (NO SVG).
+    4.  구축 사례 (Before/After): Goal(Change/Compare) -> "Grouped Bar Chart" (Chart.js/Canvas) -> Justification(도입 전후의 정량적 성과(리드타임, 불량률)를 명확하게 대비시켜 가치를 증명). (NO SVG).
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8fafc;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px;
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <header class="bg-white shadow-md sticky top-0 z-10">
+        <div class="container mx-auto px-6 py-4">
+            <h1 class="text-3xl font-bold" style="color: #004AAD;">클라우드 MES 스마트 팩토리</h1>
+            <p class="text-lg text-gray-600">H/L 공장 모델 중심 시스템 구성 및 사례 분석</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 md:p-8 mt-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8 border-l-4 border-blue-500" style="border-left-color: #0077E6;">
+                <h2 class="text-2xl font-bold mb-4" style="color: #004AAD;">1. 클라우드 MES란 무엇인가?</h2>
+                <p class="text-lg text-gray-700 mb-6">클라우드 MES(Manufacturing Execution System)는 기존에 공장 내부 서버에 설치되던 생산 관리 시스템을 클라우드(인터넷) 기반의 구독형 서비스(SaaS)로 전환한 것입니다. 이를 통해 스마트 팩토리는 막대한 초기 투자 없이, 언제 어디서나 실시간으로 생산 데이터를 수집, 분석하고 공정을 제어할 수 있게 됩니다.</p>
+                <div class="flex flex-wrap justify-around text-center my-6">
+                    <div class="p-4 min-w-[150px]">
+                        <span class="text-4xl font-bold" style="color: #0077E6;">30-50%</span>
+                        <p class="text-gray-600 mt-2">초기 구축 비용 절감</p>
+                    </div>
+                    <div class="p-4 min-w-[150px]">
+                        <span class="text-4xl font-bold" style="color: #0077E6;">99.9%</span>
+                        <p class="text-gray-600 mt-2">시스템 가용성 보장</p>
+                    </div>
+                    <div class="p-4 min-w-[150px]">
+                        <span class="text-4xl font-bold" style="color: #0077E6;">∞</span>
+                        <p class="text-gray-600 mt-2">유연한 자원 확장성</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="md:col-span-2 bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl font-bold mb-4" style="color: #004AAD;">2. 클라우드 MES 시스템 구성도 (Architecture)</h2>
+                <p class="text-lg text-gray-700 mb-6">클라우드 MES는 현장의 설비부터 전사적 시스템까지 5-Layer 모델을 기반으로 데이터를 통합합니다. 현장(Shop Floor)의 데이터가 엣지(Edge)를 거쳐 클라우드(Cloud)로 수집되고, MES가 이 데이터를 가공하여 ERP 등 상위 시스템과 연동하는 구조입니다.</p>
+                
+                <div class="flex flex-col items-center space-y-2 p-4 rounded-lg" style="background-color: #E0EFFF;">
+                    
+                    <div class="w-full md:w-3/4 bg-white border-2 p-4 rounded-lg shadow text-center" style="border-color: #004AAD;">
+                        <h4 class="font-bold text-lg" style="color: #004AAD;">Layer 5: Enterprise (ERP/SCM)</h4>
+                        <p class="text-sm text-gray-700">전사적 자원 관리 (재무, 공급망)</p>
+                    </div>
+                    
+                    <div class="text-2xl font-bold" style="color: #0077E6;">↓ ↑</div>
+                    
+                    <div class="w-full md:w-3/4 p-4 rounded-lg shadow-lg text-center text-white" style="background-color: #0077E6;">
+                        <h4 class="font-bold text-lg">Layer 4: Cloud MES (SaaS)</h4>
+                        <p class="text-sm">생산 실행/관리, 품질, 설비, 추적</p>
+                    </div>
+                    
+                    <div class="text-2xl font-bold" style="color: #0077E6;">↓ ↑</div>
+                    
+                    <div class="w-full md:w-3/4 bg-white border-2 p-4 rounded-lg shadow text-center" style="border-color: #7ABFFF;">
+                        <h4 class="font-bold text-lg" style="color: #004AAD;">Layer 3: Cloud Platform (PaaS/IaaS)</h4>
+                        <p class="text-sm text-gray-700">데이터 저장(DB), 분석, IoT 허브</p>
+                    </div>
+                    
+                    <div class="text-2xl font-bold" style="color: #0077E6;">↓ ↑</div>
+
+                    <div class="w-full md:w-3/4 bg-white border-2 p-4 rounded-lg shadow text-center" style="border-color: #B3D9FF;">
+                        <h4 class="font-bold text-lg text-gray-800">Layer 2: Edge Computing / Gateway</h4>
+                        <p class="text-sm text-gray-700">실시간 데이터 처리, 로컬 제어, 클라우드 전송</p>
+                    </div>
+
+                    <div class="text-2xl font-bold" style="color: #0077E6;">↓</div>
+                    
+                    <div class="w-full md:w-3/4 bg-gray-100 border-2 border-gray-300 p-4 rounded-lg shadow-sm text-center">
+                        <h4 class="font-bold text-lg text-gray-800">Layer 1: Shop Floor (OT)</h4>
+                        <p class="text-sm text-gray-700">PLC, 설비, 센서, 로봇, AGV</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl font-bold mb-4" style="color: #004AAD;">3. H/L 공장 모델: 문제점과 해결</h2>
+                <p class="text-lg text-gray-700 mb-6">다품종 소량생산(H/L) 공장은 잦은 작업 변경과 복잡한 공정으로 인해 데이터 관리가 어렵습니다. 클라우드 MES는 이러한 문제점을 '디지털 작업 지시', '실시간 스케줄링' 등으로 해결하여 유연성을 극대화합니다.</p>
+                <div class="chart-container">
+                    <canvas id="hlChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-600 mt-4 text-center">차트는 기존 H/L 공장의 문제 심각도(밝은 파랑)와 클라우드 MES 도입을 통한 개선도(진한 파랑)를 비교합니다.</p>
+            </section>
+
+            <section class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+                <h2 class="text-2xl font-bold mb-4" style="color: #004AAD;">4. 가상 구축 사례 (Before vs After)</h2>
+                <p class="text-lg text-gray-700 mb-6">중소 H/L 부품 제조사 'A-Tech'는 클라우드 MES 도입 후 주요 성과 지표(KPI)에서 눈에 띄는 개선을 경험했습니다. 특히 생산 리드타임이 획기적으로 단축되었고, 데이터 기반의 품질 관리로 불량률이 크게 감소했습니다.</p>
+                <div class="chart-container">
+                    <canvas id="caseStudyChart"></canvas>
+                </div>
+                <p class="text-sm text-gray-600 mt-4 text-center">클라우드 MES 도입 전(밝은 파랑)과 도입 후(중간 파랑)의 핵심 지표 변화를 보여줍니다.</p>
+            </section>
+
+        </div>
+    </main>
+
+    <footer class="text-center text-gray-500 py-8 mt-8">
+        <p>본 인포그래픽은 요청된 정보를 기반으로 생성된 시각 자료입니다.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            const brilliantBlues = {
+                darkest: '#004AAD',
+                dark: '#0077E6',
+                medium: '#7ABFFF',
+                light: '#B3D9FF',
+                lightest: '#E0EFFF'
+            };
+
+            const globalTooltipTitleCallback = function(tooltipItems) {
+                const item = tooltipItems[0];
+                let label = item.chart.data.labels[item.dataIndex];
+                if (Array.isArray(label)) {
+                    return label.join(' ');
+                } else {
+                    return label;
+                }
+            };
+
+            const hlLabels = [
+                ['잦은 생산 라인', '변경 (Setup)'], 
+                ['복잡한', '작업 지시'], 
+                ['실시간', '생산 추적 불가'], 
+                ['높은', '재공 재고']
+            ];
+
+            const ctxHL = document.getElementById('hlChart').getContext('2d');
+            new Chart(ctxHL, {
+                type: 'bar',
+                data: {
+                    labels: hlLabels,
+                    datasets: [
+                        {
+                            label: '기존 H/L 공장 문제 심각도',
+                            data: [90, 85, 80, 75],
+                            backgroundColor: brilliantBlues.medium,
+                            borderColor: brilliantBlues.medium,
+                            borderWidth: 1
+                        },
+                        {
+                            label: '클라우드 MES 개선도',
+                            data: [70, 80, 90, 65],
+                            backgroundColor: brilliantBlues.darkest,
+                            borderColor: brilliantBlues.darkest,
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: globalTooltipTitleCallback
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: {
+                                display: true,
+                                text: '지수 (100점 만점)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            const caseLabels = [
+                ['생산 리드타임', '(일)'],
+                ['공정 불량률', '(%)'],
+                ['재고 정확도', '(%)']
+            ];
+
+            const ctxCase = document.getElementById('caseStudyChart').getContext('2d');
+            new Chart(ctxCase, {
+                type: 'bar',
+                data: {
+                    labels: caseLabels,
+                    datasets: [
+                        {
+                            label: '도입 전 (Before)',
+                            data: [15, 8, 70],
+                            backgroundColor: brilliantBlues.light,
+                            borderColor: brilliantBlues.light,
+                            borderWidth: 1
+                        },
+                        {
+                            label: '도입 후 (After)',
+                            data: [7, 2, 98],
+                            backgroundColor: brilliantBlues.dark,
+                            borderColor: brilliantBlues.dark,
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                title: globalTooltipTitleCallback
+                            }
+                        },
+                        legend: {
+                            position: 'bottom',
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: '측정 값'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

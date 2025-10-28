@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Chosen Palette: Modern Tech (Dark Blue/Teal/Light Gray) -->
+    <!-- Application Structure Plan: A long-scrolling 'Storytelling' format with dual synchronized selection logic. The introductory section is expanded to include a "Global Benchmarking" card, citing multiple industry leaders (Xiaomi, BMW, Siemens) to support the 'Next Generation System (NGS)' project's necessity. Tooltips maintained for technical jargon. -->
+    <!-- Visualization & Content Choices: Global Benchmarking: HTML/CSS card with multiple industry examples. Quantified Justification: Key metric boxes. Roadmap: Dynamic HTML timeline. Budget: Chart.js Doughnut. All visualizations use HTML/CSS or Chart.js Canvas, strictly NO SVG/Mermaid. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    
+    <title>2026년 NVH NGS 연동 사업 계획: 최종본</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #f8f8f8;
+            color: #1f2937;
+        }
+        
+        .section-header {
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .concept-card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+            box-shadow: 0 5px 15px -3px rgba(0, 0, 0, 0.05);
+            border: 1px solid transparent;
+        }
+        .concept-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.1);
+            border-color: #0d9488;
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 300px; 
+            max-height: 400px;
+        }
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 350px;
+            }
+        }
+        .timeline-container {
+            border-left: 2px solid #9ca3af; 
+            padding-left: 1.5rem;
+            position: relative;
+        }
+        .timeline-point {
+            position: absolute;
+            left: -11px; 
+            background-color: #0d9488; 
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 3px solid #f8f8f8;
+            box-shadow: 0 0 0 3px #0d9488;
+        }
+        .timeline-item {
+            margin-bottom: 2.5rem;
+            padding-left: 1rem;
+        }
+
+        .strategy-button.active {
+            background-color: #0d9488 !important;
+            color: white !important;
+            border-color: #0d9488;
+        }
+        .strategy-button {
+            transition: all 0.2s ease;
+            border: 1px solid #0d9488;
+        }
+
+        /* 툴팁 스타일 */
+        .tooltip-trigger {
+            position: relative;
+            cursor: pointer;
+            text-decoration: underline;
+            text-decoration-color: #3b82f6; 
+            text-underline-offset: 4px;
+            font-weight: 600;
+        }
+
+        .tooltip-box {
+            visibility: hidden;
+            opacity: 0;
+            position: absolute;
+            z-index: 100;
+            bottom: 125%; 
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 8px 12px;
+            border-radius: 6px;
+            background-color: #1f2937; 
+            color: #ffffff;
+            text-align: center;
+            font-size: 0.75rem;
+            width: max-content;
+            max-width: 300px;
+            transition: opacity 0.3s;
+            pointer-events: none; 
+            line-height: 1.4;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .tooltip-trigger:hover .tooltip-box {
+            visibility: visible;
+            opacity: 1;
+        }
+        /* 툴팁 화살표 */
+        .tooltip-box::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #1f2937 transparent transparent transparent;
+        }
+
+        /* 모바일 대응: 툴팁이 잘리지 않도록 좌우 여백 확보 */
+        @media (max-width: 640px) {
+            .tooltip-box {
+                left: 10%;
+                right: 10%;
+                transform: translateX(0);
+                width: 80vw;
+            }
+            .tooltip-box::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
+
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="min-h-screen">
+        <header class="bg-white shadow-md sticky top-0 z-50">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex justify-between items-center">
+                <h1 class="text-3xl font-extrabold text-blue-800">2026 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 연동 사업 계획</h1>
+                <nav class="hidden md:flex space-x-6 text-lg font-medium">
+                    <a href="#vision" class="text-gray-600 hover:text-blue-700 transition">배경/비전</a>
+                    <a href="#selection" class="text-gray-600 hover:text-blue-700 transition">선정 전략</a>
+                    <a href="#strategy" class="text-gray-600 hover:text-blue-700 transition">통합 전략</a>
+                    <a href="#roadmap" class="text-gray-600 hover:text-blue-700 transition">로드맵</a>
+                    <a href="#pilot" class="text-gray-600 hover:text-blue-700 transition">NVH 파일럿</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <!-- 1. 사업 비전 및 NGS 개요 (Vision) - 글로벌 벤치마킹 강조 -->
+            <section id="vision" class="mb-16 pt-8">
+                <h2 class="text-4xl font-bold text-center mb-4 section-header text-blue-800">추진 배경: 글로벌 대세와 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span>의 당위성</h2>
+                <p class="text-lg text-gray-600 text-center max-w-4xl mx-auto mb-12">
+                    글로벌 제조 산업은 이미 **데이터 통합과 AI 기반의 자율 제조**로 패러다임이 전환되었습니다. 본 사업은 NVH 그룹이 이러한 제조 혁신의 **대세**에 합류하여 **글로벌 경쟁력을 확보**하기 위한 필수적인 선행 단계입니다.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <!-- 벤치마킹 사례 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-teal-600 text-center md:col-span-2">
+                        <div class="text-5xl mb-3">🌍</div>
+                        <h3 class="text-2xl font-semibold mb-3">글로벌 선진 사례 (3대 트렌드)</h3>
+                        <div class="space-y-2 text-left text-sm text-gray-600">
+                            <p><strong>[Xiaomi, Dark Factory]</strong>: 무인화/AI 기반 **자율 제어** (NVH의 최종 목표).</p>
+                            <p><strong>[BMW, Dingolfing]</strong>: 유연 생산을 위한 **수평적 시스템 통합** 및 실시간 데이터 활용.</p>
+                            <p><strong>[Siemens, Amberg]</strong>: 제조 전반에 걸친 **디지털 트윈**과 수직/수평 통합 (NGS 통합 목표).</p>
+                        </div>
+                    </div>
+                    <!-- 현재 문제점 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-blue-600 text-center">
+                        <div class="text-5xl mb-3">🛠️</div>
+                        <h3 class="text-2xl font-semibold mb-1">현재 문제점 (격차)</h3>
+                        <p class="text-sm text-gray-500">관계사별 이기종 시스템, 노후화된 S/W, 데이터 통일성 부족으로 인한 **정보 신뢰도 저하** 및 운영/유지보수 비효율.</p>
+                    </div>
+                    <!-- 정량적 효과 -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border-t-4 border-indigo-600 text-center">
+                        <div class="text-5xl mb-3">📈</div>
+                        <h3 class="text-2xl font-semibold mb-1">정량적 목표 및 타당성</h3>
+                        <p class="text-sm text-gray-500">AI 예지보전을 통해 **설비 가동률 15%p 향상**, **돌발 정지 30% 감소** 목표. (비용 절감 및 생산성 극대화)</p>
+                    </div>
+                </div>
+                
+                <div class="mt-12">
+                    <h3 class="text-3xl font-bold text-center mb-6 text-blue-800"><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 3대 핵심 목표</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-blue-600 text-center">
+                            <h4 class="text-xl font-semibold">🔗 시스템 통합</h4>
+                            <p class="text-sm text-gray-500"><span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span>를 통한 전 관계사 시스템 연동</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-teal-600 text-center">
+                            <h4 class="text-xl font-semibold">📐 데이터 표준화</h4>
+                            <p class="text-sm text-gray-500"><span class="tooltip-trigger">MDM<span class="tooltip-box">Master Data Management: 자재, 설비, 공정 등 핵심 데이터의 기준을 통일하는 시스템</span></span>, <span class="tooltip-trigger">AAS<span class="tooltip-box">Asset Administration Shell: 제조 설비의 정보(제원, 센서 데이터 등)를 표준화하여 담는 디지털 모델</span></span> 적용</p>
+                        </div>
+                        <div class="bg-white p-6 rounded-xl shadow-lg border-l-4 border-indigo-600 text-center">
+                            <h4 class="text-xl font-semibold">🎯 AI 표준 정립</h4>
+                            <p class="text-sm text-gray-500">표준 데이터 기반 NVH AI 예지보전 모델 실증</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. 사업 유형별 관계사 선정 전략 (Selection Strategy) -->
+            <section id="selection" class="mb-16 pt-8">
+                <h2 class="text-4xl font-bold text-center mb-4 section-header text-blue-800">사업 유형별 관계사 선정 및 매칭 전략</h2>
+                <p class="text-lg text-gray-600 text-center max-w-4xl mx-auto mb-8">
+                    정부 지원 사업의 성격과 규모에 맞춰 관계사 선정 방안을 유연하게 전환합니다.
+                </p>
+
+                <div class="max-w-4xl mx-auto mb-8">
+                    <div class="flex justify-center space-x-4">
+                        <button id="strategy-btn-single" class="strategy-button active px-6 py-2 rounded-full font-bold text-lg bg-teal-50 text-teal-800 hover:bg-teal-100 transition">
+                            단일 관계사 집중 (자율형 공장)
+                        </button>
+                        <button id="strategy-btn-multi" class="strategy-button px-6 py-2 rounded-full font-bold text-lg bg-indigo-50 text-indigo-800 hover:bg-indigo-100 transition">
+                            다수 관계사 협업 (디지털 협업공장)
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 유연한 콘텐츠 영역 -->
+                <div id="flexible-content" class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+                    <!-- Site Status / Selection Criteria -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-4 text-blue-700" id="selection-criteria-title">선정 기준 (단일 사이트)</h3>
+                        
+                        <h4 class="font-semibold text-xl text-gray-700 mb-2">핵심 부품 공급망 강화 기준</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                            <li>**전략적 중요도:** NVH 핵심 부품 제조 및 공정 보유. (<span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 연동 시 시급성)</li>
+                            <li>**데이터 확보 용이성:** 기존 <span class="tooltip-trigger">MES<span class="tooltip-box">Manufacturing Execution System: 생산 현장의 관리 및 제어 시스템</span></span>/<span class="tooltip-trigger">SAP<span class="tooltip-box">System Applications and Products: 기업의 자원 관리(ERP) 솔루션</span></span> 운영 및 센서 연동 준비성 우수.</li>
+                            <li>**NGS Roll-out 우선순위:** <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 Roll-out 선행 검증에 가장 적합한 국내 사이트.</li>
+                            <li id="collaborative-criteria" class="hidden">**협업 범위:** 5개 이상 참여 기업 간의 **전후방 가치사슬** 연계 가능성 필수.</li>
+                        </ul>
+
+                        <div id="pilot-site-info" class="mt-4 p-4 bg-teal-50 rounded-lg border-l-4 border-teal-600 shadow">
+                            <p class="text-base font-bold text-teal-800" id="selected-affiliate">✅ 단일 파일럿: NFS 경주 (예시)</p>
+                            <p class="text-sm text-gray-600 mt-1" id="pilot-goal">
+                                **목표:** <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 통합 및 NVH AI 예지보전 모델 **최초 실증 및 검증.**
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Budget / Scope -->
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-bold mb-4 text-teal-700" id="project-scope-title">사업 범위 및 재원 (자율형 공장 기준)</h3>
+                        
+                        <h4 class="font-semibold text-xl text-gray-700 mb-2">지원 사업 공고 기반</h4>
+                        <ul class="list-disc list-inside text-sm text-gray-700 space-y-2">
+                            <li>**사업 유형:** 2026년 **자율형공장 구축 지원사업** (중간1 이상 고도화)</li>
+                            <li id="support-limit-item">**최대 지원 한도:** 총 사업비 50% 이내, **최대 6억** (정부지원금 3억, 2년 이내)</li>
+                            <li>**핵심 구축:** <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 연동 <span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span>/<span class="tooltip-trigger">MDM<span class="tooltip-box">Master Data Management: 자재, 설비, 공정 등 핵심 데이터의 기준을 통일하는 시스템</span></span> 개발, AI 데이터 레이크 및 파일럿 모델.</li>
+                            <li id="scope-detail-item">**협업 시스템:** 불필요. 단일 사이트의 **자율화 수준 향상**에 집중.</li>
+                        </ul>
+                        
+                        <div class="mt-4 p-4 bg-indigo-50 rounded-lg border-l-4 border-indigo-600 shadow">
+                            <p class="text-base font-bold text-indigo-800" id="budget-summary">총 사업비 예시: 4.5억 (정부 2.25억)</p>
+                            <p class="text-sm text-gray-600 mt-1">
+                                <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 Roll-out 검증과 AI 파일럿 모델 개발에 집중 편성.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. 3대 통합 전략 (Strategy) - Interactive Cards, NGS 연계 강조 -->
+            <section id="strategy" class="mb-16 pt-8">
+                <h2 class="text-4xl font-bold text-center mb-4 section-header text-blue-800"><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 연동 3대 핵심 전략</h2>
+                <p class="text-lg text-gray-600 text-center max-w-4xl mx-auto mb-8">
+                    <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span>의 전사 표준 <span class="tooltip-trigger">MES<span class="tooltip-box">Manufacturing Execution System: 생산 현장의 관리 및 제어 시스템</span></span> 및 <span class="tooltip-trigger">SAP<span class="tooltip-box">System Applications and Products: 기업의 자원 관리(ERP) 솔루션</span></span> 연동 전략에 기반하여, 선정된 관계사의 시스템을 고도화합니다. (클릭하여 상세 전략 확인)
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div id="card1-ngs" class="concept-card bg-white p-6 rounded-xl shadow-lg border-blue-200">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="text-4xl text-blue-600">📡</span>
+                            <h3 class="text-xl font-bold text-blue-800">1. 시스템 통합 (<span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span>-Hub 구축)</h3>
+                        </div>
+                        <p class="text-gray-500 text-sm">관계사 <span class="tooltip-trigger">MES<span class="tooltip-box">Manufacturing Execution System: 생산 현장의 관리 및 제어 시스템</span></span>/<span class="tooltip-trigger">SAP<span class="tooltip-box">System Applications and Products: 기업의 자원 관리(ERP) 솔루션</span></span> ↔ <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud 플랫폼 연동</p>
+                    </div>
+                    <div id="card2-ngs" class="concept-card bg-white p-6 rounded-xl shadow-lg border-teal-200">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="text-4xl text-teal-600">📜</span>
+                            <h3 class="text-xl font-bold text-teal-800">2. <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 데이터 적용</h3>
+                        </div>
+                        <p class="text-gray-500 text-sm"><span class="tooltip-trigger">BPR<span class="tooltip-box">Business Process Re-engineering: 업무 프로세스 재설계. 표준화된 업무 구조 정립을 의미</span></span> 기반 마스터/운영 데이터 표준 일치</p>
+                    </div>
+                    <div id="card3-ngs" class="concept-card bg-white p-6 rounded-xl shadow-lg border-indigo-200">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <span class="text-4xl text-indigo-600">🔬</span>
+                            <h3 class="text-xl font-bold text-indigo-800">3. AI 학습용 데이터 기반</h3>
+                        </div>
+                        <p class="text-gray-500 text-sm">NVH 센서 + 표준 데이터셋 확보 및 <span class="tooltip-trigger">AAS<span class="tooltip-box">Asset Administration Shell: 제조 설비의 정보(제원, 센서 데이터 등)를 표준화하여 담는 디지털 모델</span></span> 적용</p>
+                    </div>
+                </div>
+
+                <!-- Detail View Area -->
+                <div id="detail-view-ngs" class="bg-white p-8 rounded-xl shadow-xl border border-gray-200 hidden">
+                    <h3 id="detail-title-ngs" class="text-2xl font-bold mb-4 text-blue-800"></h3>
+                    <div id="detail-content-ngs" class="text-gray-700 space-y-4"></div>
+                </div>
+            </section>
+
+            <!-- 4. 단계별 추진 로드맵 (Roadmap) -->
+            <section id="roadmap" class="mb-16 pt-8">
+                <h2 class="text-4xl font-bold text-center mb-4 section-header text-blue-800">단계별 추진 로드맵</h2>
+                <p class="text-lg text-gray-600 text-center max-w-4xl mx-auto mb-10" id="roadmap-subtitle">
+                    **단일 관계사 집중 (12개월)**: 정부 사업 일정(5월 협약)을 기준으로, 4단계의 명확한 마일스톤을 통해 사업을 추진합니다.
+                </p>
+
+                <!-- Roadmap Content Wrapper -->
+                <div id="roadmap-content-wrapper" class="max-w-4xl mx-auto">
+                    <!-- Roadmap will be dynamically inserted here -->
+                </div>
+            </section>
+
+            <!-- 5. 예산 및 재원 (Budget) -->
+            <section id="budget" class="mb-16 pt-8">
+                <h2 class="text-4xl font-bold text-center mb-4 section-header text-blue-800">예산 및 재원 조달 현황</h2>
+                <p class="text-lg text-gray-600 text-center max-w-4xl mx-auto mb-10" id="budget-subtitle-final">
+                    <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 연동 및 AI 파일럿에 자원을 집중하며, 단일 관계사 기준 총 4.5억(정부 2.25억) 예시를 적용합니다.
+                </p>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-center mb-4 text-blue-800">사업비 구성 비율</h3>
+                        <div class="chart-container">
+                            <canvas id="costCompositionChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                        <h3 class="text-2xl font-semibold text-center mb-4 text-teal-800">NGS 연동 비용 배분</h3>
+                        <div class="text-center text-3xl font-bold text-gray-700 mt-10" id="cost-breakdown-1">
+                            총 4.5억 중 <span class="text-blue-600">1.8억 (40%)</span> <br>
+                            <span class="text-base font-normal block mt-2">시스템 통합 및 표준화 (<span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span>/<span class="tooltip-trigger">MDM<span class="tooltip-box">Master Data Management: 자재, 설비, 공정 등 핵심 데이터의 기준을 통일하는 시스템</span></span>)</span>
+                        </div>
+                        <div class="text-center text-3xl font-bold text-gray-700 mt-8" id="cost-breakdown-2">
+                            총 4.5억 중 <span class="text-indigo-600">1.2억 (27%)</span> <br>
+                            <span class="text-base font-normal block mt-2">AI 기반 구축 및 파일럿 (DW/NVH)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. NVH AI 파일럿 (Pilot) - 관계사 시스템 연동 상세화 -->
+            <section id="pilot" class="pt-8 mb-16">
+                <h2 class="text-4xl font-bold text-center mb-4 section-header text-blue-800">NVH AI 파일럿: 관계사 데이터 기반 예지보전</h2>
+                <p class="text-lg text-gray-600 text-center max-w-4xl mx-auto mb-10">
+                    선정된 관계사 공장의 NVH 데이터와 <span class="tooltip-trigger">MES<span class="tooltip-box">Manufacturing Execution System: 생산 현장의 관리 및 제어 시스템</span></span> 데이터를 결합하여 본사 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud DW로 전송하는 통합 파이프라인 구축.
+                </p>
+
+                <div class="relative flex flex-col items-center p-8 bg-blue-50 rounded-xl shadow-xl border border-blue-200">
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4 w-full z-10 items-center">
+                        
+                        <!-- Step 1: 관계사 현장 시스템 -->
+                        <div class="flow-step bg-white p-4 rounded-lg shadow-md border-b-4 border-red-500 text-center md:col-span-1">
+                            <p class="font-bold text-xl mb-1 text-red-600">🏭 관계사 현장 시스템</p>
+                            <p class="text-xs text-gray-600" id="pilot-source"><span class="tooltip-trigger">MES<span class="tooltip-box">Manufacturing Execution System: 생산 현장의 관리 및 제어 시스템</span></span> + NVH 센서 (원천 데이터)</p>
+                        </div>
+
+                        <!-- Arrow 1 -->
+                        <div class="md:flex hidden items-center justify-center">
+                            <span class="text-4xl text-gray-400">→</span>
+                        </div>
+
+                        <!-- Step 2: 통합/표준화 레이어 (EAI/MDM) -->
+                        <div class="flow-step bg-white p-4 rounded-lg shadow-md border-b-4 border-teal-500 text-center md:col-span-1">
+                            <p class="font-bold text-xl mb-1 text-teal-600">🔑 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준화</p>
+                            <p class="text-xs text-gray-600"><span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span> Gateway + <span class="tooltip-trigger">BPR<span class="tooltip-box">Business Process Re-engineering: 업무 프로세스 재설계. 표준화된 업무 구조 정립을 의미</span></span> 기반 데이터 포맷 적용</p>
+                        </div>
+
+                        <!-- Arrow 2 -->
+                        <div class="md:flex hidden items-center justify-center">
+                            <span class="text-4xl text-gray-400">→</span>
+                        </div>
+
+                        <!-- Step 3: 본사 AI 플랫폼 -->
+                        <div class="flow-step bg-white p-4 rounded-lg shadow-md border-b-4 border-indigo-500 text-center md:col-span-1">
+                            <p class="font-bold text-xl mb-1 text-indigo-600">☁️ 본사 AI 플랫폼</p>
+                            <p class="text-xs text-gray-600"><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud DW 적재 및 AI 모델 학습</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 p-4 bg-white rounded-lg shadow-inner border border-green-300 text-center w-full max-w-2xl">
+                        <p class="font-bold text-green-700">핵심 기대 효과 (공통):</p>
+                        <p class="text-gray-700 text-sm"><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 연동 방안 확보 및 NVH 돌발 정지 30% 감소 예상.</p>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            function wrapLabel(str, maxwidth) {
+                if (str.length <= maxwidth) {
+                    return str;
+                }
+                const words = str.split(' ');
+                let lines = [];
+                let currentLine = '';
+
+                words.forEach(word => {
+                    if ((currentLine + ' ' + word).length > maxwidth) {
+                        lines.push(currentLine.trim());
+                        currentLine = word;
+                    } else {
+                        currentLine += ' ' + word;
+                    }
+                });
+                lines.push(currentLine.trim());
+                return lines.filter(l => l.length > 0);
+            }
+
+            const mandatoryTooltipCallback = {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                      return label.join(' ');
+                    } else {
+                      return label;
+                    }
+                }
+            };
+            
+            let chartInstance = null;
+            const budgetCtx = document.getElementById('costCompositionChart');
+
+            function updateChart(data, labels, backgroundColors) {
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                chartInstance = new Chart(budgetCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '사업비 (억 원)',
+                            data: data,
+                            backgroundColor: backgroundColors,
+                            borderColor: '#ffffff',
+                            borderWidth: 4,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        family: "'Noto Sans KR', sans-serif"
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                callbacks: mandatoryTooltipCallback,
+                                bodyFont: {
+                                    family: "'Noto Sans KR', sans-serif"
+                                },
+                                titleFont: {
+                                    family: "'Noto Sans KR', sans-serif"
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // --- 로드맵 템플릿 데이터 ---
+            const roadmapTemplates = {
+                single: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 max-w-4xl mx-auto timeline-container">
+                        <div class="timeline-item flex">
+                            <div class="timeline-point mt-1"></div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-blue-600 mb-1">Phase 1: 분석 및 기획</h3>
+                                <div class="text-sm font-medium text-gray-500 mb-2">1~3월 (3개월)</div>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1 bg-white p-3 rounded shadow-md">
+                                    <li>**관계사 현황 진단:** NFS 경주 MES/SAP <span class="tooltip-trigger">BPR<span class="tooltip-box">Business Process Re-engineering: 업무 프로세스 재설계. 표준화된 업무 구조 정립을 의미</span></span> 분석 및 연동 범위 확정.</li>
+                                    <li>**표준 설계:** <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 데이터 항목 정의 및 사업계획서 제출.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item flex">
+                            <div class="timeline-point mt-1"></div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-teal-600 mb-1">Phase 2: 통합 및 공동 플랫폼 구축</h3>
+                                <div class="text-sm font-medium text-gray-500 mb-2">4~8월 (5개월)</div>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1 bg-white p-3 rounded shadow-md">
+                                    <li><span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span> Gateway 구축 및 **관계사 I/F 개발** 및 연동 테스트.</li>
+                                    <li>데이터 표준 정의 및 **관계사 시스템 항목 적용**.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item flex">
+                            <div class="timeline-point mt-1"></div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-indigo-600 mb-1">Phase 3: AI 기반 및 파일럿</h3>
+                                <div class="text-sm font-medium text-gray-500 mb-2">8~10월 (3개월)</div>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1 bg-white p-3 rounded shadow-md">
+                                    <li><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud DW에 <span class="tooltip-trigger">AAS<span class="tooltip-box">Asset Administration Shell: 제조 설비의 정보(제원, 센서 데이터 등)를 표준화하여 담는 디지털 모델</span></span> 기반 데이터 레이크 구축.</li>
+                                    <li>NVH 센서 연동 및 AI 모델 학습/검증.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item flex">
+                            <div class="timeline-point mt-1"></div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-600 mb-1">Phase 4: 안정화 및 확산 계획</h3>
+                                <div class="text-sm font-medium text-gray-500 mb-2">11~12월 (2개월)</div>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1 bg-white p-3 rounded shadow-md">
+                                    <li>통합 시스템 테스트 및 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 플랫폼과의 최종 연동 검증 및 안정화.</li>
+                                    <li>성공 모델 기반 타 관계사 **(2차 Roll-out)** 확대 전략 수립.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                multi: `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8 max-w-4xl mx-auto timeline-container">
+                        <div class="timeline-item flex">
+                            <div class="timeline-point mt-1"></div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-blue-600 mb-1">Phase 1: 분석 및 컨소시엄 기획</h3>
+                                <div class="text-sm font-medium text-gray-500 mb-2">1~3개월 (3개월)</div>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1 bg-white p-3 rounded shadow-md">
+                                    <li>**컨소시엄 진단:** 5개 관계사 AS-IS 분석 및 협업 플랫폼 연동 설계.</li>
+                                    <li>**공동 표준 정의:** <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 및 디지털 협업공장 필수 요건 정의.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item flex">
+                            <div class="timeline-point mt-1"></div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-teal-600 mb-1">Phase 2: 공동 플랫폼 구축 및 연동</h3>
+                                <div class="text-sm font-medium text-gray-500 mb-2">4~12개월 (9개월)</div>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1 bg-white p-3 rounded shadow-md">
+                                    <li>**공동 시스템 구축:** <span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span>/<span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud 기반의 공동 협업 플랫폼 개발.</li>
+                                    <li>**개별사 연동:** 5개 관계사 시스템 ↔ 공동 플랫폼 1차 I/F 연동 및 표준 데이터 적용.</li>
+                                </ul>
+                            </div>
+                        </div>
+                         <div class="timeline-item flex">
+                            <div class="timeline-point mt-1" style="background-color: #f59e0b;"></div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-amber-600 mb-1">Phase 3: AI 기반 및 공동 파일럿</h3>
+                                <div class="text-sm font-medium text-gray-500 mb-2">8~12개월 (5개월, 공동 사업 기간 내)</div>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1 bg-white p-3 rounded shadow-md">
+                                    <li><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud DW에 <span class="tooltip-trigger">AAS<span class="tooltip-box">Asset Administration Shell: 제조 설비의 정보(제원, 센서 데이터 등)를 표준화하여 담는 디지털 모델</span></span> 기반 데이터 레이크 구축 (공동 활용).</li>
+                                    <li>**공급망 관제:** 5개사 데이터를 활용한 NVH/품질 공동 관제 모델 개발.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="timeline-item flex">
+                            <div class="timeline-point mt-1" style="background-color: #059669;"></div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-green-600 mb-1">Phase 4: 협업 관계사 개별 고도화 (확장)</h3>
+                                <div class="text-sm font-medium text-gray-500 mb-2">13~24개월 (12개월)</div>
+                                <ul class="text-sm text-gray-700 list-disc list-inside space-y-1 bg-white p-3 rounded shadow-md">
+                                    <li>**개별 시스템 고도화:** 5개 협력사별 개별 스마트공장 고도화(중간1 이상).</li>
+                                    <li>**활용 극대화:** <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 공동 플랫폼 기반으로 개별 공정 자율화 추진.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                `
+            };
+            
+            // --- 사업 데이터 정의 ---
+            const singleSiteData = {
+                id: 'single',
+                title: '선정 기준 (단일 사이트)',
+                selectedAffiliate: '✅ 단일 파일럿: NFS 경주 (NVH 핵심 부품 공정)',
+                pilotGoal: '**목표:** <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 통합 및 NVH AI 예지보전 모델 **최초 실증 및 검증.**',
+                supportLimit: '**최대 지원 한도:** 총 사업비 50% 이내, **최대 6억** (정부지원금 3억, 2년 이내)',
+                scopeDetail: '**협업 시스템:** 불필요. 단일 사이트의 **자율화 수준 향상**에 집중.',
+                type: '2026년 **자율형공장 구축 지원사업**',
+                budgetSubtitle: '<span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 연동 및 AI 파일럿에 자원을 집중하며, 단일 관계사 기준 총 4.5억(정부 2.25억) 예시를 적용합니다.',
+                budgetSummary: '총 사업비 예시: 4.5억 (정부 2.25억)',
+                chartData: [1.8, 1.2, 0.8, 0.7], 
+                chartLabels: ['S/W 개발 (통합/MDM)', 'AI 기반 (DW/파일럿)', 'H/W (센서/게이트웨이)', '컨설팅/기타'],
+                colors: ['#FF6B00', '#0077B6', '#00B4D8', '#FFD600'],
+                cost1: '총 4.5억 중 <span class="text-blue-600">1.8억 (40%)</span> <br><span class="text-base font-normal block mt-2">시스템 통합 및 표준화 (<span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span>/<span class="tooltip-trigger">MDM<span class="tooltip-box">Master Data Management: 자재, 설비, 공정 등 핵심 데이터의 기준을 통일하는 시스템</span></span>)</span>',
+                cost2: '총 4.5억 중 <span class="text-indigo-600">1.2억 (27%)</span> <br><span class="text-base font-normal block mt-2">AI 기반 구축 및 파일럿 (DW/NVH)</span>',
+                pilotSource: 'NFS 경주 MES + NVH 센서 (원천 데이터)',
+                collaborativeHidden: true,
+                roadmapSubtitle: '**단일 관계사 집중 (12개월)**: 정부 사업 일정(5월 협약)을 기준으로, 4단계의 명확한 마일스톤을 통해 사업을 추진합니다.',
+                roadmapContent: roadmapTemplates.single,
+            };
+
+            const multiSiteData = {
+                id: 'multi',
+                title: '선정 기준 (다수 관계사 협업)',
+                selectedAffiliate: '✅ 협업 그룹: NFS(경주/구미), GH(구미/포천), NTM (총 5개사 컨소시엄)',
+                pilotGoal: '**목표:** <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 통합 및 **공동 협업 시스템** 구축을 통한 공급망 전체의 NVH 품질 관리.',
+                supportLimit: '**최대 지원 한도:** 컨소시엄당 **최대 10억** (총 사업비 50% 이내, 12개월)',
+                scopeDetail: '**협업 시스템:** **공동·협업 스마트 시스템 구축** 필수. (5개사 이상의 전후방 연계 시너지 창출)',
+                type: '2026년 **디지털 협업공장 구축 지원사업**',
+                budgetSubtitle: '5개 관계사 컨소시엄 기준, 총 20억 (정부 10억) 예시를 적용합니다. (공동/개별 비율 반영)',
+                budgetSummary: '총 사업비 예시: 20억 (정부 10억)',
+                chartData: [8.0, 4.0, 5.0, 3.0], 
+                chartLabels: ['공동 S/W 개발 (EAI/PL)', '개별 S/W 고도화 (5개사)', 'H/W/센서/기타', '컨설팅/운영비/협업'],
+                colors: ['#0d9488', '#0f766e', '#14b8a6', '#6ee7b7'],
+                cost1: '총 20억 중 <span class="text-blue-600">8.0억 (40%)</span> <br><span class="text-base font-normal block mt-2">공동 S/W 개발 (<span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span>/협업 플랫폼)</span>',
+                cost2: '총 20억 중 <span class="text-indigo-600">4.0억 (20%)</span> <br><span class="text-base font-normal block mt-2">개별 스마트공장 고도화 (5개사)</span>',
+                pilotSource: '5개 관계사 MES/SAP + NVH 센서 (통합 원천 데이터)',
+                collaborativeHidden: false,
+                roadmapSubtitle: '**다수 관계사 협업 (24개월 확장)**: 공동 플랫폼 구축(12개월) 후 개별사 고도화(12개월)를 동시 추진합니다.',
+                roadmapContent: roadmapTemplates.multi,
+            };
+
+            const allData = { single: singleSiteData, multi: multiSiteData };
+
+            function updateFlexibleContent(scenario) {
+                const data = allData[scenario];
+
+                document.getElementById('selection-criteria-title').textContent = data.title;
+                document.getElementById('selected-affiliate').textContent = data.selectedAffiliate;
+                document.getElementById('pilot-goal').innerHTML = data.pilotGoal;
+                document.getElementById('project-scope-title').textContent = data.type + ' 기준';
+                document.getElementById('support-limit-item').innerHTML = data.supportLimit;
+                document.getElementById('scope-detail-item').innerHTML = data.scopeDetail;
+                
+                document.getElementById('budget-subtitle-final').innerHTML = data.budgetSubtitle;
+                document.getElementById('budget-summary').textContent = data.budgetSummary;
+                document.getElementById('pilot-source').innerHTML = data.pilotSource;
+                document.getElementById('roadmap-subtitle').textContent = data.roadmapSubtitle;
+                
+                document.getElementById('cost-breakdown-1').innerHTML = data.cost1;
+                document.getElementById('cost-breakdown-2').innerHTML = data.cost2;
+
+                document.getElementById('collaborative-criteria').classList.toggle('hidden', data.collaborativeHidden);
+                
+                // Roadmap Updates
+                document.getElementById('roadmap-content-wrapper').innerHTML = data.roadmapContent;
+
+                const processedLabels = data.chartLabels.map(l => wrapLabel(l, 16));
+                updateChart(data.chartData, processedLabels, data.colors);
+
+                // Button synchronization
+                document.getElementById('strategy-btn-single').classList.toggle('active', scenario === 'single');
+                document.getElementById('strategy-btn-multi').classList.toggle('active', scenario === 'multi');
+            }
+
+            // Button Click Handlers
+            document.getElementById('strategy-btn-single').addEventListener('click', () => {
+                updateFlexibleContent('single');
+            });
+
+            document.getElementById('strategy-btn-multi').addEventListener('click', () => {
+                updateFlexibleContent('multi');
+            });
+
+            // Initial load (Default to single-site)
+            updateFlexibleContent('single');
+
+             // Detail Card Click Handlers (Re-initialization after DOM update/load)
+            const strategyDetails = {
+                'card1-ngs': {
+                    title: '1. 시스템 통합 (NGS-Hub 구축)',
+                    content: `
+                        <p class="font-semibold text-xl mb-3 text-blue-700"><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 연동 전략: <span class="tooltip-trigger">EAI/ESB<span class="tooltip-box">Enterprise Application Integration / Enterprise Service Bus: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span> 기반 연동</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>관계사 MES 연동:</strong> 선정된 관계사의 <span class="tooltip-trigger">MES<span class="tooltip-box">Manufacturing Execution System: 생산 현장의 관리 및 제어 시스템</span></span>에서 핵심 생산, 품질 데이터를 추출합니다.</li>
+                            <li><strong><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud Gateway:</strong> <span class="tooltip-trigger">EAI<span class="tooltip-box">Enterprise Application Integration: 기업 내 시스템 간 데이터 연동을 위한 미들웨어</span></span> 미들웨어를 활용하여 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud 플랫폼으로 데이터를 실시간 전송하는 게이트웨이를 구축합니다.</li>
+                            <li>**<span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Roll-out 준비:** 연동 노하우를 타 관계사에 적용할 수 있는 표준화된 인터페이스(I/F)를 확보합니다.</li>
+                        </ul>
+                    `
+                },
+                'card2-ngs': {
+                    title: '2. NGS 표준 데이터 적용 (BPR 기반)',
+                    content: `
+                        <p class="font-semibold text-xl mb-3 text-teal-700"><span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> <span class="tooltip-trigger">BPR<span class="tooltip-box">Business Process Re-engineering: 업무 프로세스 재설계. 표준화된 업무 구조 정립을 의미</span></span> 연계: 마스터 데이터 통일</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>업무 프로세스 재설계 (<span class="tooltip-trigger">BPR<span class="tooltip-box">Business Process Re-engineering: 업무 프로세스 재설계. 표준화된 업무 구조 정립을 의미</span></span>):</strong> 본사 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span>에서 정의된 표준 업무 프로세스를 관계사 시스템에 맞춰 경량화하여 적용합니다.</li>
+                            <li><strong><span class="tooltip-trigger">MDM<span class="tooltip-box">Master Data Management: 자재, 설비, 공정 등 핵심 데이터의 기준을 통일하는 시스템</span></span> 구축:</strong> 자재, 설비, 공정 등 마스터 데이터를 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> 표준 코드로 일치시키는 <span class="tooltip-trigger">MDM<span class="tooltip-box">Master Data Management: 자재, 설비, 공정 등 핵심 데이터의 기준을 통일하는 시스템</span></span>(Master Data Management)을 구현하여 데이터 신뢰도를 높입니다.</li>
+                            <li><strong>표준 기술 적용:</strong> IEC 63278(<span class="tooltip-trigger">AAS<span class="tooltip-box">Asset Administration Shell: 제조 설비의 정보(제원, 센서 데이터 등)를 표준화하여 담는 디지털 모델</span></span>) 등 제조 데이터 표준을 적용할 수 있는 데이터 구조를 정립합니다.</li>
+                        </ul>
+                    `
+                },
+                'card3-ngs': {
+                    title: '3. AI 학습용 데이터 기반 (NVH 파일럿)',
+                    content: `
+                        <p class="font-semibold text-xl mb-3 text-indigo-700">핵심 목표: NVH 예지보전</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>데이터 레이크 구축:</strong> 통합 및 표준화된 관계사 생산/품질 데이터와 NVH 센서 데이터를 본사 <span class="tooltip-trigger">NGS<span class="tooltip-box">Next Generation System: NVH 그룹의 차세대 표준 통합 시스템</span></span> Cloud DW에 축적합니다.</li>
+                            <li><strong>AI 데이터셋:</strong> NVH 센서 데이터와 생산 공정 변수 데이터를 결합하여 AI 모델 학습에 최적화된 데이터셋을 구축합니다.</li>
+                            <li><strong>자율형 공장 필수 요건:</strong> AI, DT(시뮬레이션 이상), <span class="tooltip-trigger">AAS<span class="tooltip-box">Asset Administration Shell: 제조 설비의 정보(제원, 센서 데이터 등)를 표준화하여 담는 디지털 모델</span></span> 적용 충족을 위한 기반을 마련합니다.</li>
+                        </ul>
+                    `
+                }
+            };
+            const strategyCards = document.querySelectorAll('.concept-card');
+            const detailView = document.getElementById('detail-view-ngs');
+            const detailTitle = document.getElementById('detail-title-ngs');
+            const detailContent = document.getElementById('detail-content-ngs');
+
+            strategyCards.forEach(card => {
+                card.addEventListener('click', () => {
+                    const cardId = card.id;
+                    const data = strategyDetails[cardId];
+
+                    strategyCards.forEach(c => {
+                        const baseColor = c.classList.contains('border-blue-200') ? 'border-blue-200' : 
+                                            c.classList.contains('border-teal-200') ? 'border-teal-200' : 
+                                            'border-indigo-200';
+                        const activeColor = c.classList.contains('border-blue-500') ? 'border-blue-500' : 
+                                            c.classList.contains('border-teal-500') ? 'border-teal-500' : 
+                                            c.classList.contains('border-indigo-500') ? 'border-indigo-500' : 
+                                            '';
+
+                        if(activeColor) {
+                            c.classList.remove(activeColor);
+                            c.classList.add(baseColor);
+                        }
+                    });
+                    
+                    const activeColorClass = card.classList.contains('border-blue-200') ? 'border-blue-500' : 
+                                             card.classList.contains('border-teal-200') ? 'border-teal-500' : 
+                                             'border-indigo-500';
+                    const baseColorClass = card.classList.contains('border-blue-200') ? 'border-blue-200' : 
+                                           card.classList.contains('border-teal-200') ? 'border-teal-200' : 
+                                           'border-indigo-200';
+
+                    card.classList.remove(baseColorClass);
+                    card.classList.add(activeColorClass);
+
+
+                    detailTitle.textContent = data.title;
+                    detailContent.innerHTML = data.content;
+                    detailView.classList.remove('hidden');
+                    
+                    setTimeout(() => {
+                        detailView.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }, 100);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
